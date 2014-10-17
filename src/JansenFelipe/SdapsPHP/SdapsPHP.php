@@ -15,12 +15,11 @@ class SdapsPHP {
      * @return boolean
      */
     public static function createProject($pathProject, $pathTexFile) {
-        if (self::command_exists('python')) {
-            $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' setup_tex ' . $pathTexFile);
-            exec($command);
-            return true;
-        } else
-            throw new \Exception('Python command not found');
+        self::pythonExists();
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' setup_tex ' . $pathTexFile);
+        exec($command);
+        return true;
     }
 
     /**
@@ -32,12 +31,11 @@ class SdapsPHP {
      * @return boolean
      */
     public static function add($pathProject, $pathTiffFile) {
-        if (self::command_exists('python')) {
-            $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' add ' . $pathTiffFile);
-            exec($command);
-            return true;
-        } else
-            throw new \Exception('Python command not found');
+        self::pythonExists();
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' add ' . $pathTiffFile);
+        exec($command);
+        return true;
     }
 
     /**
@@ -48,12 +46,11 @@ class SdapsPHP {
      * @return boolean
      */
     public static function recognize($pathProject) {
-        if (self::command_exists('python')) {
-            $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' recognize');
-            exec($command);
-            return true;
-        } else
-            throw new \Exception('Python command not found');
+        self::pythonExists();
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' recognize');
+        exec($command);
+        return true;
     }
 
     /**
@@ -61,15 +58,62 @@ class SdapsPHP {
      * $ sdaps.py {$pathProject} csv export
      *
      * @param  string $pathProject Path of project
-     * @return boolean
+     * @return string PATH_CSV
      */
     public static function csvExport($pathProject) {
-        if (self::command_exists('python')) {
-            $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' csv export');
-            exec($command);
-            return true;
-        } else
-            throw new \Exception('Python command not found');
+        self::pythonExists();
+
+        exec(escapeshellcmd('rm ' . $pathProject . '/data_1.csv'));
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' csv export');
+        exec($command);
+        return $pathProject . '/data_1.csv';
+    }
+
+    /**
+     * Command SDAPS
+     * $ sdaps.py {$pathProject} stamp -r {$quantity}
+     *
+     * @param  string  $pathProject Path of project
+     * @param  integer $quantity
+     * @return boolean
+     */
+    public static function stampRandom($pathProject, $quantity) {
+        self::pythonExists();
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' stamp -r ' . $quantity);
+        exec($command);
+        return true;
+    }
+
+    /**
+     * Command SDAPS
+     * $ sdaps.py {$pathProject} stamp -f {$ids}
+     *
+     * @throws Exception
+     * @param  string  $pathProject Path of project
+     * @param  array $ids
+     * @return boolean
+     */
+    public static function stampIDs($pathProject, $ids = array()) {
+        self::pythonExists();
+
+        if (empty($ids))
+            throw new Exception('ids not found');
+
+        $tmpfname = tempnam(sys_get_temp_dir(), 'ids'); // good 
+        $handle = fopen($tmpfname, "w");
+
+        foreach ($ids as $id)
+            fwrite($handle, $id . PHP_EOL);
+
+        fclose($handle);
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' stamp -f ' . $tmpfname);
+        exec($command);
+
+        unlink($tmpfname);
+        return true;
     }
 
     /**
@@ -77,14 +121,27 @@ class SdapsPHP {
      * $ sdaps.py {$pathProject} report_tex
      *
      * @param  string $pathProject Path of project
-     * @return boolean
+     * @return string PATH_PDF_REPORT
      */
-    public static function reportTex($pathProject) {
-        if (self::command_exists('python')) {
-            $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' report_tex');
-            exec($command);
-            return true;
-        } else
+    public static function reportPDF($pathProject) {
+        self::pythonExists();
+
+        exec(escapeshellcmd('rm ' . $pathProject . '/report_1.pdf'));
+
+        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' report_tex');
+        exec($command);
+
+        return $pathProject . '/report_1.pdf';
+    }
+
+    /**
+     * Determines if a command exists on the current environment
+     *
+     * @throws Exception
+     * @return null
+     */
+    private static function pythonExists() {
+        if (!self::command_exists('python'))
             throw new \Exception('Python command not found');
     }
 
