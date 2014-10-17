@@ -2,7 +2,7 @@
 
 namespace JansenFelipe\SdapsPHP;
 
-define('SDAPS_DIR', __DIR__ . '/../../../sdaps');
+define('SDAPS_DIR', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'sdaps' . DIRECTORY_SEPARATOR);
 
 class SdapsPHP {
 
@@ -17,7 +17,10 @@ class SdapsPHP {
     public static function createProject($pathProject, $pathTexFile) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' setup_tex ' . $pathTexFile);
+
+        $command = 'python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' setup_tex ' . $pathTexFile;
+        echo($command);
+        die;
         exec($command);
         return true;
     }
@@ -33,7 +36,7 @@ class SdapsPHP {
     public static function add($pathProject, $pathTiffFile) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' add ' . $pathTiffFile);
+        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' add ' . $pathTiffFile);
         exec($command);
         return true;
     }
@@ -48,7 +51,7 @@ class SdapsPHP {
     public static function recognize($pathProject) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' recognize');
+        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' recognize');
         exec($command);
         return true;
     }
@@ -63,11 +66,11 @@ class SdapsPHP {
     public static function csvExport($pathProject) {
         self::pythonExists();
 
-        exec(escapeshellcmd('rm ' . $pathProject . '/data_1.csv'));
+        exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv'));
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' csv export');
+        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' csv export');
         exec($command);
-        return $pathProject . '/data_1.csv';
+        return $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv';
     }
 
     /**
@@ -81,7 +84,7 @@ class SdapsPHP {
     public static function stampRandom($pathProject, $quantity) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' stamp -r ' . $quantity);
+        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' stamp -r ' . $quantity);
         exec($command);
         return true;
     }
@@ -109,7 +112,7 @@ class SdapsPHP {
 
         fclose($handle);
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' stamp -f ' . $tmpfname);
+        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' stamp -f ' . $tmpfname);
         exec($command);
 
         unlink($tmpfname);
@@ -126,12 +129,12 @@ class SdapsPHP {
     public static function reportPDF($pathProject) {
         self::pythonExists();
 
-        exec(escapeshellcmd('rm ' . $pathProject . '/report_1.pdf'));
+        exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf'));
 
         $command = escapeshellcmd('python ' . SDAPS_DIR . '/sdaps.py ' . $pathProject . ' report_tex');
         exec($command);
 
-        return $pathProject . '/report_1.pdf';
+        return $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf';
     }
 
     /**
