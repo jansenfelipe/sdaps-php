@@ -2,7 +2,7 @@
 
 namespace JansenFelipe\SdapsPHP;
 
-define('SDAPS_DIR', __DIR__ . '/../../../vendor/sdaps');
+define('SDAPS_DIR', __DIR__ . '/../../../sdaps');
 
 class SdapsPHP {
 

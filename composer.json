@@ -22,10 +22,5 @@
             "dev-master": "1.0-dev"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
-            "git clone --branch 1.1.5 https://github.com/sdaps/sdaps.git vendor/sdaps"
-        ]
-    },
     "minimum-stability": "dev"
 }

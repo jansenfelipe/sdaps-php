@@ -1,0 +1,17 @@
+MANIFEST
+build
+*.pyc
+*.wpr
+*~
+*.o
+*.so
+*.pot
+debug.py
+test/projects
+doc-pak
+description-pak
+sdaps_*.deb
+backup-*sdaps.tgz
+_build
+dist
+setup.cfg
