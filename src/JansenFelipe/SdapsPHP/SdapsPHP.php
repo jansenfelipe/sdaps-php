@@ -12,17 +12,14 @@ class SdapsPHP {
      *
      * @param  string $pathProject  Path of project
      * @param  string $pathTexFile  Path of tex file
-     * @return boolean
+     * @return string Command executed
      */
     public static function createProject($pathProject, $pathTexFile) {
         self::pythonExists();
 
-
         $command = 'python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' setup_tex ' . $pathTexFile;
-        echo($command);
-        die;
-        exec($command);
-        return true;
+        exec(escapeshellcmd($command));
+        return $command;
     }
 
     /**
@@ -31,14 +28,14 @@ class SdapsPHP {
      *
      * @param  string $pathProject  Path of project
      * @param  string $pathTiffFile  Path of tiff file
-     * @return boolean
+     * @return string Command executed
      */
     public static function add($pathProject, $pathTiffFile) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' add ' . $pathTiffFile);
-        exec($command);
-        return true;
+        $command = 'python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' add ' . $pathTiffFile;
+        exec(escapeshellcmd($command));
+        return $command;
     }
 
     /**
@@ -46,14 +43,14 @@ class SdapsPHP {
      * $ sdaps.py {$pathProject} recognize
      *
      * @param  string $pathProject Path of project
-     * @return boolean
+     * @return string Command executed
      */
     public static function recognize($pathProject) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' recognize');
-        exec($command);
-        return true;
+        $command = 'python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' recognize';
+        exec(escapeshellcmd($command));
+        return $command;
     }
 
     /**
@@ -79,14 +76,14 @@ class SdapsPHP {
      *
      * @param  string  $pathProject Path of project
      * @param  integer $quantity
-     * @return boolean
+     * @return string Command executed
      */
     public static function stampRandom($pathProject, $quantity) {
         self::pythonExists();
 
-        $command = escapeshellcmd('python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' stamp -r ' . $quantity);
-        exec($command);
-        return true;
+        $command = 'python ' . SDAPS_DIR . 'sdaps.py ' . $pathProject . ' stamp -r ' . $quantity;
+        exec(escapeshellcmd($command));
+        return $command;
     }
 
     /**
