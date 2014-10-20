@@ -21,6 +21,21 @@ class SdapsPHP {
     }
 
     /**
+     * Command RM
+     * $ rm -rf {$pathProject}
+     *
+     * @param  string $pathProject  Path of project
+     * @return string Command executed
+     */
+    public static function deleteProject($pathProject) {
+        self::command_exists('rm');
+
+        $command = 'rm -rf ' . $pathProject;
+        exec(escapeshellcmd($command));
+        return $command;
+    }
+
+    /**
      * Command SDAPS
      * $ sdaps.py {$pathProject} add {$pathTiffFile}
      *
