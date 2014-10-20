@@ -8,37 +8,40 @@ class SdapsPHP {
      * Command SDAPS
      * $ sdaps.py {$pathProject} setup_tex {$pathTexFile}
      *
+     * @throws Exception
      * @param  string $pathProject  Path of project
      * @param  string $pathTexFile  Path of tex file
-     * @return string Command executed
+     * @return string Path questionnaire.pdf
      */
     public static function createProject($pathProject, $pathTexFile) {
         self::sdapsExists();
 
         $command = 'sdaps ' . $pathProject . ' setup_tex ' . $pathTexFile;
         exec(escapeshellcmd($command));
-        return $command;
+        return $pathProject . DIRECTORY_SEPARATOR . 'questionnaire.pdf';
     }
 
     /**
      * Command RM
      * $ rm -rf {$pathProject}
      *
+     * @throws Exception
      * @param  string $pathProject  Path of project
-     * @return string Command executed
+     * @return string Boolean
      */
     public static function deleteProject($pathProject) {
-        self::command_exists('rm');
+        self::rmExists();
 
         $command = 'rm -rf ' . $pathProject;
         exec(escapeshellcmd($command));
-        return $command;
+        return true;
     }
 
     /**
      * Command SDAPS
      * $ sdaps.py {$pathProject} add {$pathTiffFile}
      *
+     * @throws Exception
      * @param  string $pathProject  Path of project
      * @param  string $pathTiffFile  Path of tiff file
      * @return string Command executed
@@ -55,6 +58,7 @@ class SdapsPHP {
      * Command SDAPS
      * $ sdaps.py {$pathProject} recognize
      *
+     * @throws Exception
      * @param  string $pathProject Path of project
      * @return string Command executed
      */
@@ -70,11 +74,13 @@ class SdapsPHP {
      * Command SDAPS
      * $ sdaps.py {$pathProject} csv export
      *
+     * @throws Exception
      * @param  string $pathProject Path of project
      * @return string PATH_CSV
      */
     public static function csvExport($pathProject) {
         self::sdapsExists();
+        self::rmExists();
 
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv'));
 
@@ -85,8 +91,56 @@ class SdapsPHP {
 
     /**
      * Command SDAPS
+     * $ sdaps {$pathProject} report_tex
+     * $ pdfimages -j 
+     * $ convert
+     *
+     * @throws Exception
+     * @param  string $pathProject Path of project
+     * @return string PATH_CSV
+     */
+    public static function commentsExport($pathProject) {
+        self::sdapsExists();
+        self::rmExists();
+
+        if (!self::command_exists('pdfimages'))
+            throw new \Exception('pdfimages command not found. See http://poppler.freedesktop.org and http://packages.ubuntu.com/precise/poppler-utils');
+
+        if (!self::command_exists('convert'))
+            throw new \Exception('convert command not found. See http://www.imagemagick.org/script/index.php');
+
+        //Clear..
+        exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf'));
+
+        //Create report PDF to extract comments
+        exec(escapeshellcmd('sdaps ' . $pathProject . ' report_tex'));
+
+        //Create folder commnet if not exists
+        @mkdir($pathProject . DIRECTORY_SEPARATOR . 'comments');
+
+        //Clear..
+        exec(escapeshellcmd($pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*'));
+
+        //Extract images..
+        exec(escapeshellcmd('pdfimages -j ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf' . $pathProject . DIRECTORY_SEPARATOR . 'comments'));
+
+        //Convert to jpg
+        exec(escapeshellcmd('convert ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*.ppm ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'image%d.jpg'));
+
+        //Select only jpg files
+        $files = glob($pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*.jpg');
+
+        //Images do base64
+        return array_map(function($el) {
+            return 'data:image/jpg;base64,' . base64_encode(file_get_contents($el));
+        }, $files);
+    }
+
+    /**
+     * Command SDAPS
      * $ sdaps.py {$pathProject} stamp -r {$quantity}
      *
+     * @throws Exception
      * @param  string  $pathProject Path of project
      * @param  integer $quantity
      * @return string Command executed
@@ -133,6 +187,7 @@ class SdapsPHP {
      * Command SDAPS
      * $ sdaps.py {$pathProject} report_tex
      *
+     * @throws Exception
      * @param  string $pathProject Path of project
      * @return string PATH_PDF_REPORT
      */
@@ -148,7 +203,18 @@ class SdapsPHP {
     }
 
     /**
-     * Determines if a command exists on the current environment
+     * Determines if rm exists
+     *
+     * @throws Exception
+     * @return null
+     */
+    private static function rmExists() {
+        if (!self::command_exists('rm'))
+            throw new \Exception('rm command not found');
+    }
+
+    /**
+     * Determines if sdaps exists
      *
      * @throws Exception
      * @return null
@@ -162,7 +228,7 @@ class SdapsPHP {
      * Determines if a command exists on the current environment
      *
      * @param string $command The command to check
-     * @return bool True if the command has been found ; otherwise, false.
+     * @return bool
      */
     private static function command_exists($command) {
         $whereIsCommand = (PHP_OS == 'WINNT') ? 'where' : 'which';
