@@ -122,7 +122,7 @@ class SdapsPHP {
         exec(escapeshellcmd('rm -r ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*'));
 
         //Extract images..
-        exec(escapeshellcmd('pdfimages -j ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf ' . $pathProject . DIRECTORY_SEPARATOR . 'comments'));
+        exec(escapeshellcmd('pdfimages -j ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR));
 
         //Convert to jpg
         exec(escapeshellcmd('convert ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*.ppm ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'image%d.jpg'));
