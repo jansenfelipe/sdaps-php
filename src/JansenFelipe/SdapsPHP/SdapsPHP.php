@@ -115,14 +115,14 @@ class SdapsPHP {
         //Create report PDF to extract comments
         exec(escapeshellcmd('sdaps ' . $pathProject . ' report_tex'));
 
-        //Create folder commnet if not exists
+        //Create folder comment if not exists
         @mkdir($pathProject . DIRECTORY_SEPARATOR . 'comments');
 
         //Clear..
-        exec(escapeshellcmd($pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*'));
+        exec(escapeshellcmd('rm -r ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*'));
 
         //Extract images..
-        exec(escapeshellcmd('pdfimages -j ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf' . $pathProject . DIRECTORY_SEPARATOR . 'comments'));
+        exec(escapeshellcmd('pdfimages -j ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf ' . $pathProject . DIRECTORY_SEPARATOR . 'comments'));
 
         //Convert to jpg
         exec(escapeshellcmd('convert ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . '*.ppm ' . $pathProject . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'image%d.jpg'));
