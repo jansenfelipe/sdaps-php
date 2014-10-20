@@ -13,7 +13,7 @@ class SdapsPHP {
      * @return string Command executed
      */
     public static function createProject($pathProject, $pathTexFile) {
-        self::pythonExists();
+        self::sdapsExists();
 
         $command = 'sdaps ' . $pathProject . ' setup_tex ' . $pathTexFile;
         exec(escapeshellcmd($command));
@@ -29,7 +29,7 @@ class SdapsPHP {
      * @return string Command executed
      */
     public static function add($pathProject, $pathTiffFile) {
-        self::pythonExists();
+        self::sdapsExists();
 
         $command = 'sdaps ' . $pathProject . ' add ' . $pathTiffFile;
         exec(escapeshellcmd($command));
@@ -44,7 +44,7 @@ class SdapsPHP {
      * @return string Command executed
      */
     public static function recognize($pathProject) {
-        self::pythonExists();
+        self::sdapsExists();
 
         $command = 'sdaps ' . $pathProject . ' recognize';
         exec(escapeshellcmd($command));
@@ -59,7 +59,7 @@ class SdapsPHP {
      * @return string PATH_CSV
      */
     public static function csvExport($pathProject) {
-        self::pythonExists();
+        self::sdapsExists();
 
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv'));
 
@@ -77,7 +77,7 @@ class SdapsPHP {
      * @return string Command executed
      */
     public static function stampRandom($pathProject, $quantity) {
-        self::pythonExists();
+        self::sdapsExists();
 
         $command = 'sdaps ' . $pathProject . ' stamp -r ' . $quantity;
         exec(escapeshellcmd($command));
@@ -94,7 +94,7 @@ class SdapsPHP {
      * @return boolean
      */
     public static function stampIDs($pathProject, $ids = array()) {
-        self::pythonExists();
+        self::sdapsExists();
 
         if (empty($ids))
             throw new Exception('ids not found');
@@ -122,7 +122,7 @@ class SdapsPHP {
      * @return string PATH_PDF_REPORT
      */
     public static function reportPDF($pathProject) {
-        self::pythonExists();
+        self::sdapsExists();
 
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf'));
 
