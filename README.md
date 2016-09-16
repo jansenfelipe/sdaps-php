@@ -30,8 +30,9 @@ Call
 use JansenFelipe\SdapsPHP\SdapsPHP;
 
 $pathProject = '/path/you/want/to/create/the/project/sdaps';
+$pathLaTeX = '/path/format.tex';
 
-if(SdapsPHP::createProject($pathProject))
+if(SdapsPHP::createProject($pathProject, $pathLaTeX))
 {
     SdapsPHP::add($pathProject, '/images/image01.tiff');
     SdapsPHP::recognize($pathProject);
