@@ -13,10 +13,13 @@ class SdapsPHP {
      * @param  string $pathTexFile  Path of tex file
      * @return string Path questionnaire.pdf
      */
-    public static function createProject($pathProject, $pathTexFile) {
+    public static function createProject($pathProject, $pathTexFile,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
-        $command = 'sdaps ' . $pathProject . ' setup_tex ' . $pathTexFile;
+        $command = 'sdaps ' . $pathProject . ' setup_tex ' . $pathTexFile." " .$flags ;
         exec(escapeshellcmd($command));
         return $pathProject . DIRECTORY_SEPARATOR . 'questionnaire.pdf';
     }
@@ -46,10 +49,13 @@ class SdapsPHP {
      * @param  string $pathTiffFile  Path of tiff file
      * @return string Command executed
      */
-    public static function add($pathProject, $pathTiffFile) {
+    public static function add($pathProject, $pathTiffFile,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
-        $command = 'sdaps ' . $pathProject . ' add ' . $pathTiffFile;
+        $command = 'sdaps ' . $pathProject . ' add ' . $pathTiffFile. " ".$flags;
         exec(escapeshellcmd($command));
         return $command;
     }
@@ -62,10 +68,13 @@ class SdapsPHP {
      * @param  string $pathProject Path of project
      * @return string Command executed
      */
-    public static function recognize($pathProject) {
+    public static function recognize($pathProject,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
-        $command = 'sdaps ' . $pathProject . ' recognize';
+        $command = 'sdaps ' . $pathProject . ' recognize'. " ".$flags;
         exec(escapeshellcmd($command));
         return $command;
     }
@@ -78,13 +87,16 @@ class SdapsPHP {
      * @param  string $pathProject Path of project
      * @return string PATH_CSV
      */
-    public static function csvExport($pathProject) {
+    public static function csvExport($pathProject,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
         self::rmExists();
 
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv'));
 
-        $command = escapeshellcmd('sdaps ' . $pathProject . ' csv export');
+        $command = escapeshellcmd('sdaps ' . $pathProject . ' csv export'. " ".$flags);
         exec($command);
         return $pathProject . DIRECTORY_SEPARATOR . 'data_1.csv';
     }
@@ -99,7 +111,10 @@ class SdapsPHP {
      * @param  string $pathProject Path of project
      * @return string PATH_CSV
      */
-    public static function commentsExport($pathProject) {
+    public static function commentsExport($pathProject,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
         self::rmExists();
 
@@ -113,7 +128,7 @@ class SdapsPHP {
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf'));
 
         //Create report PDF to extract comments
-        exec(escapeshellcmd('sdaps ' . $pathProject . ' report_tex'));
+        exec(escapeshellcmd('sdaps ' . $pathProject . ' report_tex'. " ".$flags));
 
         //Create folder comment if not exists
         @mkdir($pathProject . DIRECTORY_SEPARATOR . 'comments');
@@ -145,10 +160,13 @@ class SdapsPHP {
      * @param  integer $quantity
      * @return string Command executed
      */
-    public static function stampRandom($pathProject, $quantity) {
+    public static function stampRandom($pathProject, $quantity,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
-        $command = 'sdaps ' . $pathProject . ' stamp -r ' . $quantity;
+        $command = 'sdaps ' . $pathProject . ' stamp -r ' . $quantity. " ".$flags;
         exec(escapeshellcmd($command));
         return $command;
     }
@@ -162,7 +180,10 @@ class SdapsPHP {
      * @param  array $ids
      * @return boolean
      */
-    public static function stampIDs($pathProject, $ids = array()) {
+    public static function stampIDs($pathProject, $ids = array(),$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
         if (empty($ids))
@@ -176,7 +197,7 @@ class SdapsPHP {
 
         fclose($handle);
 
-        $command = escapeshellcmd('sdaps ' . $pathProject . ' stamp -f ' . $tmpfname);
+        $command = escapeshellcmd('sdaps ' . $pathProject . ' stamp -f ' . $tmpfname . " ".$flags);
         exec($command);
 
         unlink($tmpfname);
@@ -191,12 +212,15 @@ class SdapsPHP {
      * @param  string $pathProject Path of project
      * @return string PATH_PDF_REPORT
      */
-    public static function reportPDF($pathProject) {
+    public static function reportPDF($pathProject,$aditionalParameters = array()) {
+        $flags = "";
+        if (!empty($aditionalParameters))
+            $flags = implode(" ",$aditionalParameters);
         self::sdapsExists();
 
         exec(escapeshellcmd('rm ' . $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf'));
 
-        $command = escapeshellcmd('sdaps ' . $pathProject . ' report_tex');
+        $command = escapeshellcmd('sdaps ' . $pathProject . ' report_tex'. " ".$flags);
         exec($command);
 
         return $pathProject . DIRECTORY_SEPARATOR . 'report_1.pdf';
